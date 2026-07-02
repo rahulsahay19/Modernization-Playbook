@@ -1,0 +1,143 @@
+@HealthCare.Claims.Monolith_HostAddress = http://localhost:5213
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/policies
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/policies
+Content-Type: application/json
+
+{
+  "policyNumber": "POL-3003",
+  "insuranceProviderName": "ICICI Lombard General Insurance Co. Ltd.",
+  "planName": "Complete Health Insurance",
+  "annualLimit": 750000,
+  "deductible": 3000
+}
+
+###
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/members
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/members
+Content-Type: application/json
+
+{
+  "memberId": "MEM-3003",
+  "fullName": "Rohan Sharma",
+  "policyNumber": "POL-3003",
+  "dateOfBirth": "1985-01-18",
+  "email": "rohan.sharma@example.com",
+  "mobileNumber": "+919900112233"
+}
+
+###
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/providers
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/providers
+Content-Type: application/json
+
+{
+  "providerId": "PRV-303",
+  "name": "Fortis Hospital",
+  "networkTier": "Gold",
+  "city": "Bengaluru"
+}
+
+###
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/claims
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/claims
+Content-Type: application/json
+
+{
+  "memberId": "MEM-2002",
+  "providerId": "PRV-202",
+  "serviceDate": "2026-06-12",
+  "lines": [
+    {
+      "code": "IMG-300",
+      "description": "MRI scan",
+      "amount": 42000
+    },
+    {
+      "code": "CONS-120",
+      "description": "Specialist consultation",
+      "amount": 6500
+    }
+  ]
+}
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/documents
+Content-Type: application/json
+
+{
+  "claimNumber": "CLM-90001",
+  "fileName": "discharge-summary.pdf",
+  "documentType": "DischargeSummary"
+}
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/documents/DOC-70001/verify
+Content-Type: application/json
+
+{
+  "isVerified": true,
+  "rejectionReason": null
+}
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/claims/CLM-90001/approve
+Content-Type: application/json
+
+{
+  "approvedAmount": 16250
+}
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/payments/claims/CLM-90001/schedule
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.Monolith_HostAddress}}/api/payments/PAY-REPLACE/settle
+Content-Type: application/json
+
+{
+  "settlementReference": "UTR-20260622-0001",
+  "settledDate": "2026-06-22"
+}
+
+###
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/reports/operations
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/reports/operations?from=2026-06-01&to=2026-06-30
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.Monolith_HostAddress}}/api/audit
+Accept: application/json
+
+###
