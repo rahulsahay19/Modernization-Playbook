@@ -109,5 +109,5 @@ violations to remove during modularization.
 | Settlement | Completion of the financial transfer |
 | Network tier | Provider participation classification |
 
-The code and course narrative should use these terms consistently before new
+The code narrative should use these terms consistently before new
 technical boundaries are introduced.
