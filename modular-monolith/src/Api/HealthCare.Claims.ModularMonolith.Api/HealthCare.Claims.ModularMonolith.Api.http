@@ -1,0 +1,6 @@
+@HealthCare.Claims.ModularMonolith.Api_HostAddress = http://localhost:5220
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/platform/modules
+Accept: application/json
+
+###

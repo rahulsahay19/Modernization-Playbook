@@ -1,0 +1,37 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Api/">
+    <Project Path="src/Api/HealthCare.Claims.ModularMonolith.Api/HealthCare.Claims.ModularMonolith.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/HealthCare.Claims.ModularMonolith.BuildingBlocks/HealthCare.Claims.ModularMonolith.BuildingBlocks.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Audit/">
+    <Project Path="src/Modules/Audit/HealthCare.Claims.Modules.Audit/HealthCare.Claims.Modules.Audit.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Claims/">
+    <Project Path="src/Modules/Claims/HealthCare.Claims.Modules.Claims/HealthCare.Claims.Modules.Claims.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Communications/">
+    <Project Path="src/Modules/Communications/HealthCare.Claims.Modules.Communications/HealthCare.Claims.Modules.Communications.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Documents/">
+    <Project Path="src/Modules/Documents/HealthCare.Claims.Modules.Documents/HealthCare.Claims.Modules.Documents.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Membership/">
+    <Project Path="src/Modules/Membership/HealthCare.Claims.Modules.Membership/HealthCare.Claims.Modules.Membership.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Payments/">
+    <Project Path="src/Modules/Payments/HealthCare.Claims.Modules.Payments/HealthCare.Claims.Modules.Payments.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Policy/">
+    <Project Path="src/Modules/Policy/HealthCare.Claims.Modules.Policy/HealthCare.Claims.Modules.Policy.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/ProviderNetwork/">
+    <Project Path="src/Modules/ProviderNetwork/HealthCare.Claims.Modules.ProviderNetwork/HealthCare.Claims.Modules.ProviderNetwork.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Reporting/">
+    <Project Path="src/Modules/Reporting/HealthCare.Claims.Modules.Reporting/HealthCare.Claims.Modules.Reporting.csproj" />
+  </Folder>
+</Solution>
