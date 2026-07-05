@@ -4,3 +4,38 @@ GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/platform/modules
 Accept: application/json
 
 ###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/policies
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/policies?status=Active
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/members
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/members?policyNumber=HDFC-ERGO-FAM-1001
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/providers
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/providers?city=Bengaluru&cashlessEnabled=true
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/providers?networkTier=Preferred
+Accept: application/json
+
+###
