@@ -1,4 +1,5 @@
 ﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.ReferenceData;
 using HealthCare.Claims.Modules.Policy.Application;
 using HealthCare.Claims.Modules.Policy.Endpoints;
 using HealthCare.Claims.Modules.Policy.Infrastructure;
@@ -17,6 +18,7 @@ namespace HealthCare.Claims.Modules.Policy
         public void AddServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IPolicyRepository, InMemoryPolicyRepository>();
+            services.AddScoped<IPolicyEligibilityReader,  PolicyEligibilityReader>();
             services.AddScoped<PolicyApplicationService>();
         }
 

@@ -1,4 +1,5 @@
 ﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.ReferenceData;
 using HealthCare.Claims.Modules.Membership.Application;
 using HealthCare.Claims.Modules.Membership.Endpoints;
 using HealthCare.Claims.Modules.Membership.Infrastructure;
@@ -17,6 +18,7 @@ namespace HealthCare.Claims.Modules.Membership
         public void AddServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IMemberRepository, InMemoryMemberRepository>();
+            services.AddScoped<IMemberEligibilityReader, MemberEligibilityReader>();
             services.AddScoped<MembershipApplicationService>();
         }
 

@@ -1,4 +1,5 @@
 ﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.ReferenceData;
 using HealthCare.Claims.Modules.ProviderNetwork.Application;
 using HealthCare.Claims.Modules.ProviderNetwork.Endpoints;
 using HealthCare.Claims.Modules.ProviderNetwork.Infrastructure;
@@ -17,6 +18,7 @@ namespace HealthCare.Claims.Modules.ProviderNetwork
         public void AddServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IProviderRepository, InMemoryProviderRepository>();
+            services.AddScoped<IProviderNetworkReader, ProviderNetworkReader>();
             services.AddScoped<ProviderApplicationService>();
         }
 

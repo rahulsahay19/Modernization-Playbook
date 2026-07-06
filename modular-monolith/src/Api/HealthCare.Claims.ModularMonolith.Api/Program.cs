@@ -1,6 +1,7 @@
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
 using HealthCare.Claims.Modules.Audit;
 using HealthCare.Claims.Modules.Claims;
+using HealthCare.Claims.Modules.Claims.Domain;
 using HealthCare.Claims.Modules.Communications;
 using HealthCare.Claims.Modules.Documents;
 using HealthCare.Claims.Modules.Membership;
@@ -13,14 +14,21 @@ using HealthCare.Claims.Modules.ProviderNetwork.Domain;
 using HealthCare.Claims.Modules.Reporting;
 using Microsoft.OpenApi;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.MapType<ClaimStatus>(CreateStringEnumSchema<ClaimStatus>);
+    options.MapType<ClaimType>(CreateStringEnumSchema<ClaimType>);
     options.MapType<MemberStatus>(CreateStringEnumSchema<MemberStatus>);
     options.MapType<PolicyStatus>(CreateStringEnumSchema<PolicyStatus>);
     options.MapType<ProviderNetworkTier>(CreateStringEnumSchema<ProviderNetworkTier>);

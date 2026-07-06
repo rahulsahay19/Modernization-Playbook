@@ -39,3 +39,53 @@ GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/providers?networkT
 Accept: application/json
 
 ###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/claims
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/claims?status=Submitted
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/claims/40000000-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/claims
+Content-Type: application/json
+
+{
+  "policyNumber": "HDFC-ERGO-FAM-1001",
+  "memberNumber": "MEM-10001",
+  "providerCode": "GGM-FM-014",
+  "claimType": "Cashless",
+  "dateOfService": "2026-06-20",
+  "diagnosis": "Knee ligament injury",
+  "procedure": "Arthroscopy",
+  "lines": [
+    {
+      "description": "Hospital package",
+      "amount": 82000
+    },
+    {
+      "description": "Diagnostics",
+      "amount": 9500
+    }
+  ]
+}
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/claims/40000000-0000-0000-0000-000000000001/approve
+Content-Type: application/json
+
+{
+  "approvedAmount": 76000,
+  "reason": "Covered under active policy and preferred provider network."
+}
+
+###
