@@ -1,4 +1,5 @@
-﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
+﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Claims;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
 using HealthCare.Claims.Modules.Claims.Application;
 using HealthCare.Claims.Modules.Claims.Endpoints;
 using HealthCare.Claims.Modules.Claims.Infrastructure;
@@ -17,6 +18,7 @@ namespace HealthCare.Claims.Modules.Claims
         public void AddServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IClaimRepository, InMemoryClaimRepository>();
+            services.AddScoped<IClaimReferenceReader, ClaimReferenceReader>();
             services.AddScoped<ClaimApplicationService>();
         }
 
