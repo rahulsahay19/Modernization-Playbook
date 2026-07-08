@@ -89,3 +89,66 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/documents
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/documents?claimNumber=CLM-202606270001
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/documents
+Content-Type: application/json
+
+{
+  "claimNumber": "CLM-202606270001",
+  "documentType": "DiagnosticReport",
+  "fileName": "mri-report-clm-202606270001.pdf",
+  "storageReference": "local://claims/CLM-202606270001/mri-report.pdf",
+  "notes": "MRI report uploaded by member."
+}
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/documents/50000000-0000-0000-0000-000000000002/verify
+Content-Type: application/json
+
+{
+  "notes": "Final bill verified by claims operations."
+}
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments?status=Scheduled
+Accept: application/json
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments
+Content-Type: application/json
+
+{
+  "claimNumber": "CLM-202606260002",
+  "payeeName": "Meera Iyer",
+  "bankAccountMasked": "XXXXXX9876",
+  "ifscCode": "ICIC0009876"
+}
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments/60000000-0000-0000-0000-000000000001/settle
+Content-Type: application/json
+
+{
+  "remarks": "Settlement completed through NEFT batch."
+}
+
+###

@@ -10,9 +10,4 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\HealthCare.Claims.ModularMonolith.BuildingBlocks\HealthCare.Claims.ModularMonolith.BuildingBlocks.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-    <Folder Include="Endpoints\" />
-  </ItemGroup>
-
 </Project>

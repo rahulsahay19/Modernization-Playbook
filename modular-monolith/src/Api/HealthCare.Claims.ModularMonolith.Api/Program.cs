@@ -4,9 +4,11 @@ using HealthCare.Claims.Modules.Claims;
 using HealthCare.Claims.Modules.Claims.Domain;
 using HealthCare.Claims.Modules.Communications;
 using HealthCare.Claims.Modules.Documents;
+using HealthCare.Claims.Modules.Documents.Domain;
 using HealthCare.Claims.Modules.Membership;
 using HealthCare.Claims.Modules.Membership.Domain;
 using HealthCare.Claims.Modules.Payments;
+using HealthCare.Claims.Modules.Payments.Domain;
 using HealthCare.Claims.Modules.Policy;
 using HealthCare.Claims.Modules.Policy.Domain;
 using HealthCare.Claims.Modules.ProviderNetwork;
@@ -29,7 +31,10 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.MapType<ClaimStatus>(CreateStringEnumSchema<ClaimStatus>);
     options.MapType<ClaimType>(CreateStringEnumSchema<ClaimType>);
+    options.MapType<ClaimDocumentStatus>(CreateStringEnumSchema<ClaimDocumentStatus>);
+    options.MapType<ClaimDocumentType>(CreateStringEnumSchema<ClaimDocumentType>);
     options.MapType<MemberStatus>(CreateStringEnumSchema<MemberStatus>);
+    options.MapType<PaymentStatus>(CreateStringEnumSchema<PaymentStatus>);
     options.MapType<PolicyStatus>(CreateStringEnumSchema<PolicyStatus>);
     options.MapType<ProviderNetworkTier>(CreateStringEnumSchema<ProviderNetworkTier>);
 });
