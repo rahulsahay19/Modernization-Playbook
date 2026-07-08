@@ -136,7 +136,7 @@ POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments
 Content-Type: application/json
 
 {
-  "claimNumber": "CLM-202606260002",
+  "claimNumber": "CLM-202606270001",
   "payeeName": "Meera Iyer",
   "bankAccountMasked": "XXXXXX9876",
   "ifscCode": "ICIC0009876"
