@@ -1,8 +1,10 @@
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
 using HealthCare.Claims.Modules.Audit;
 using HealthCare.Claims.Modules.Claims;
 using HealthCare.Claims.Modules.Claims.Domain;
 using HealthCare.Claims.Modules.Communications;
+using HealthCare.Claims.Modules.Communications.Domain;
 using HealthCare.Claims.Modules.Documents;
 using HealthCare.Claims.Modules.Documents.Domain;
 using HealthCare.Claims.Modules.Membership;
@@ -26,6 +28,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+builder.Services.AddSingleton<IEventBus, InProcessEventBus>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -34,6 +37,8 @@ builder.Services.AddSwaggerGen(options =>
     options.MapType<ClaimDocumentStatus>(CreateStringEnumSchema<ClaimDocumentStatus>);
     options.MapType<ClaimDocumentType>(CreateStringEnumSchema<ClaimDocumentType>);
     options.MapType<MemberStatus>(CreateStringEnumSchema<MemberStatus>);
+    options.MapType<NotificationChannel>(CreateStringEnumSchema<NotificationChannel>);
+    options.MapType<NotificationStatus>(CreateStringEnumSchema<NotificationStatus>);
     options.MapType<PaymentStatus>(CreateStringEnumSchema<PaymentStatus>);
     options.MapType<PolicyStatus>(CreateStringEnumSchema<PolicyStatus>);
     options.MapType<ProviderNetworkTier>(CreateStringEnumSchema<ProviderNetworkTier>);

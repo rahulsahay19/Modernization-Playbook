@@ -136,7 +136,7 @@ POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments
 Content-Type: application/json
 
 {
-  "claimNumber": "CLM-202606270001",
+  "claimNumber": "CLM-202606260002",
   "payeeName": "Meera Iyer",
   "bankAccountMasked": "XXXXXX9876",
   "ifscCode": "ICIC0009876"
@@ -150,5 +150,25 @@ Content-Type: application/json
 {
   "remarks": "Settlement completed through NEFT batch."
 }
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/audit
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/audit?module=Claims
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/notifications
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/notifications?recipient=member:MEM-10001
+Accept: application/json
 
 ###

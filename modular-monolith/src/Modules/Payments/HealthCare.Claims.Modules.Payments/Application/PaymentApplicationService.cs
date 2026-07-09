@@ -1,11 +1,14 @@
 ﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Claims;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events.BusinessEvents;
 using HealthCare.Claims.Modules.Payments.Domain;
 
 namespace HealthCare.Claims.Modules.Payments.Application
 {
     public sealed class PaymentApplicationService(
         IPaymentInstructionRepository payments,
-        IClaimReferenceReader claims)
+        IClaimReferenceReader claims,
+        IEventBus eventBus)
     {
         public IReadOnlyCollection<PaymentInstructionSummary> List(string? claimNumber = null, PaymentStatus? status = null)
         {
@@ -84,7 +87,13 @@ namespace HealthCare.Claims.Modules.Payments.Application
             }
 
             payment.Settle(request.Remarks);
-
+            eventBus.Publish(new PaymentSettledEvent(
+                Guid.NewGuid(),
+                DateTimeOffset.UtcNow,
+                payment.PaymentNumber,
+                payment.ClaimNumber,
+                payment.PayeeName,
+                payment.Amount));
             return PaymentInstructionSummary.FromPayment(payment);
         }
 

@@ -5,8 +5,8 @@
         Guid Id,
         DateTimeOffset OccurredOn,
         string ClaimNumber,
-        string MemberNumber,
         string PolicyNumber,
+        string MemberNumber,        
         decimal TotalAmount
     ) : IIntegrationEvent;
 }

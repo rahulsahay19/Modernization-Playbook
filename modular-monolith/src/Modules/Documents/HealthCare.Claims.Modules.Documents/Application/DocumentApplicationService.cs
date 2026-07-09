@@ -1,11 +1,14 @@
 ﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Claims;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events.BusinessEvents;
 using HealthCare.Claims.Modules.Documents.Domain;
 
 namespace HealthCare.Claims.Modules.Documents.Application
 {
     public sealed class DocumentApplicationService(
         IClaimDocumentRepository documents,
-        IClaimReferenceReader claims)
+        IClaimReferenceReader claims,
+        IEventBus eventBus)
     {
         public IReadOnlyCollection<ClaimDocumentSummary> List(string? claimNumber = null)
         {
@@ -60,6 +63,12 @@ namespace HealthCare.Claims.Modules.Documents.Application
             }
 
             document.Verify(request.Notes);
+            eventBus.Publish(new DocumentVerifiedEvent(
+                Guid.NewGuid(),
+                DateTimeOffset.UtcNow,
+                document.ClaimNumber,
+                document.DocumentType.ToString(),
+                document.FileName));
             return ClaimDocumentSummary.FromDocument(document);
         }
 

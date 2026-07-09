@@ -1,4 +1,6 @@
-﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.ReferenceData;
+﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events.BusinessEvents;
+using HealthCare.Claims.ModularMonolith.BuildingBlocks.ReferenceData;
 using HealthCare.Claims.Modules.Claims.Domain;
 
 namespace HealthCare.Claims.Modules.Claims.Application
@@ -7,7 +9,8 @@ namespace HealthCare.Claims.Modules.Claims.Application
         IClaimRepository claims,
         IPolicyEligibilityReader policies,
         IMemberEligibilityReader members,
-        IProviderNetworkReader providers)
+        IProviderNetworkReader providers,
+        IEventBus eventBus)
     {
         public IReadOnlyCollection<ClaimSummary> List(ClaimStatus? status = null, string? memberNumber = null) 
         {
@@ -52,6 +55,13 @@ namespace HealthCare.Claims.Modules.Claims.Application
                 ClaimStatus.Submitted);
 
             claims.Add(claim);
+            eventBus.Publish(new ClaimSubmittedEvent(
+                Guid.NewGuid(),
+                DateTimeOffset.UtcNow,
+                claim.ClaimNumber,
+                claim.PolicyNumber,
+                claim.MemberNumber,
+                claim.TotalAmount));
             return ClaimDetails.FromClaim(claim);
         }
 
@@ -76,7 +86,13 @@ namespace HealthCare.Claims.Modules.Claims.Application
 
             var approvedAmount = request.ApprovedAmount ?? claim.TotalAmount;
             claim.Approve(approvedAmount, request.Reason);
-
+            eventBus.Publish(new ClaimApprovedEvent(
+                Guid.NewGuid(),
+                DateTimeOffset.UtcNow,
+                claim.ClaimNumber,
+                claim.MemberNumber,
+                approvedAmount,
+                request.Reason));
             return ClaimDetails.FromClaim(claim);
         }
 
@@ -89,6 +105,12 @@ namespace HealthCare.Claims.Modules.Claims.Application
             }
             
             claim.Reject(request.Reason);
+            eventBus.Publish(new ClaimRejectedEvent(
+               Guid.NewGuid(),
+               DateTimeOffset.UtcNow,
+               claim.ClaimNumber,
+               claim.MemberNumber,
+               request.Reason));
             return ClaimDetails.FromClaim(claim);
         }
 
