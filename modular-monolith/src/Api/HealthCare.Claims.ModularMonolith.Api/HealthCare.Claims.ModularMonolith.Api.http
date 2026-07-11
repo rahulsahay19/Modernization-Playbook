@@ -172,3 +172,17 @@ GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/notifications?reci
 Accept: application/json
 
 ###
+
+  
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/reports/operations
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/reports/claims-summary
+Accept: application/json
+
+###
+
+GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/reports/payments-summary
+Accept: application/json

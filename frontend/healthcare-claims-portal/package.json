@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:monolith": "vite --mode monolith",
+    "dev:modular": "vite --mode modular",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

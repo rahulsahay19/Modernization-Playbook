@@ -112,6 +112,10 @@ function Status({ children }: { children: unknown }) {
 }
 
 function App() {
+  const backendName = import.meta.env.VITE_BACKEND_NAME ?? 'Backend'
+  const backendRunCommand =
+    import.meta.env.VITE_BACKEND_RUN_COMMAND ??
+    'dotnet run --project monolith/src/HealthCare.Claims.Monolith'
   const [activeView, setActiveView] = useState<View>('dashboard')
   const [data, setData] = useState<PortalData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -183,12 +187,14 @@ function App() {
         <div className="system-panel">
           <div className="system-heading">
             <span className={usingDemoData ? 'dot dot-amber' : 'dot'} />
-            {usingDemoData ? 'Demo mode' : 'Monolith connected'}
+            {usingDemoData ? 'Demo mode' : `${backendName} connected`}
           </div>
           <p>
             {usingDemoData
-              ? 'Start the .NET API to use live operational data.'
-              : 'All capabilities currently share one deployment and database.'}
+              ? `Start the ${backendName} API to use live operational data.`
+              : backendName === 'Modular monolith'
+                ? 'Capabilities share one deployment, with module boundaries protected.'
+                : 'All capabilities currently share one deployment and database.'}
           </p>
         </div>
       </aside>
@@ -249,7 +255,7 @@ function App() {
                 <div className="notice">
                   <span className="dot dot-amber" />
                   Showing representative data because the API is unavailable.
-                  <code>dotnet run --project monolith/src/HealthCare.Claims.Monolith</code>
+                  <code>{backendRunCommand}</code>
                 </div>
               )}
               {activeView === 'dashboard' && (
