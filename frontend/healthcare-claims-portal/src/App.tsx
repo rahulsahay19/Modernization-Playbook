@@ -192,7 +192,9 @@ function App() {
           <p>
             {usingDemoData
               ? `Start the ${backendName} API to use live operational data.`
-              : backendName === 'Modular monolith'
+              : backendName === 'Strangler gateway'
+                ? 'Gateway routes each capability to its current backend owner.'
+                : backendName === 'Modular monolith'
                 ? 'Capabilities share one deployment, with module boundaries protected.'
                 : 'All capabilities currently share one deployment and database.'}
           </p>

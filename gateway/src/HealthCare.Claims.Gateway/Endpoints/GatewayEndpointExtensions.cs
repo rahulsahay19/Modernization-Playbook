@@ -1,6 +1,7 @@
 ﻿using HealthCare.Claims.Gateway.Configuration;
 using HealthCare.Claims.Gateway.Proxy;
 using Microsoft.Extensions.Options;
+using GatewayProxy = HealthCare.Claims.Gateway.Proxy.GatewayProxy;
 
 namespace HealthCare.Claims.Gateway.Endpoints;
 
@@ -13,7 +14,7 @@ public static class GatewayEndpointExtensions
         app.MapGet("/api/gateway/routes", (IOptions<GatewayOptions> options) =>
             Results.Ok(new
             {
-                gateway = "ClaimSphere Strangler Gateway",
+                gateway = "HealthCare Strangler Gateway",
                 strategy = "The frontend calls the gateway. The gateway decides which backend owns each capability.",
                 routes = options.Value.Routes
             }));

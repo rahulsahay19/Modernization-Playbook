@@ -7,6 +7,7 @@
     "dev": "vite",
     "dev:monolith": "vite --mode monolith",
     "dev:modular": "vite --mode modular",
+    "dev:gateway": "vite --mode gateway",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

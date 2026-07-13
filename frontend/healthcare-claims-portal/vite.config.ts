@@ -5,7 +5,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const defaultProxyTarget =
-    mode === 'modular' ? 'http://localhost:5220' : 'http://localhost:5213'
+    mode === 'gateway'
+      ? 'http://localhost:5230'
+      : mode === 'modular'
+        ? 'http://localhost:5220'
+        : 'http://localhost:5213'
   const apiProxyTarget = env.VITE_API_PROXY_TARGET || defaultProxyTarget
 
   return {

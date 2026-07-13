@@ -10,7 +10,7 @@ From the repository root:
 ```powershell
 cd .\frontend\healthcare-claims-portal
 npm install
-npm run dev
+npm run dev:monolith
 ```
 
 Open:
@@ -38,6 +38,48 @@ This prevents the browser from following proxied requests to
 - **Demo mode:** Uses representative local data when the backend is unavailable.
 
 Use the refresh button in the header after starting or stopping the backend.
+
+## Backend Modes
+
+Use these scripts to choose the backend boundary being demonstrated:
+
+```powershell
+npm run dev:monolith
+npm run dev:modular
+npm run dev:gateway
+```
+
+The gateway mode proxies `/api/*` to:
+
+```text
+http://localhost:5230
+```
+
+In gateway mode, start these backend processes first:
+
+```powershell
+dotnet run --project .\modular-monolith\src\Api\HealthCare.Claims.ModularMonolith.Api
+dotnet run --project .\gateway\src\HealthCare.Claims.Gateway
+```
+
+Then run:
+
+```powershell
+npm run dev:gateway
+```
+
+The sidebar should show:
+
+```text
+Strangler gateway connected
+```
+
+Gateway diagnostics are available at:
+
+```text
+http://localhost:5230/api/gateway/routes
+http://localhost:5230/api/gateway/health
+```
 
 ## Backend Boundary
 
@@ -68,6 +110,9 @@ Restart Vite after changing environment variables.
 
 ```powershell
 npm run dev
+npm run dev:monolith
+npm run dev:modular
+npm run dev:gateway
 npm run build
 npm run lint
 npm run preview
