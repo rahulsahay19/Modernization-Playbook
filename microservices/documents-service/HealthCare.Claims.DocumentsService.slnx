@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HealthCare.Claims.DocumentsService.Api/HealthCare.Claims.DocumentsService.Api.csproj" />
+    <Project Path="src/HealthCare.Claims.DocumentsService.Application/HealthCare.Claims.DocumentsService.Application.csproj" />
+    <Project Path="src/HealthCare.Claims.DocumentsService.Domain/HealthCare.Claims.DocumentsService.Domain.csproj" />
+    <Project Path="src/HealthCare.Claims.DocumentsService.Infrastructure/HealthCare.Claims.DocumentsService.Infrastructure.csproj" />
+  </Folder>
+</Solution>

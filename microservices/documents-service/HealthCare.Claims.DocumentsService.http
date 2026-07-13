@@ -1,0 +1,49 @@
+@DocumentsService_HostAddress = http://localhost:5240
+
+### Health
+GET {{DocumentsService_HostAddress}}/health
+Accept: application/json
+
+### Service metadata
+GET {{DocumentsService_HostAddress}}/api/platform/modules
+Accept: application/json
+
+### List documents
+GET {{DocumentsService_HostAddress}}/api/documents
+Accept: application/json
+
+### List documents by claim
+GET {{DocumentsService_HostAddress}}/api/documents?claimNumber=CLM-202606270001
+Accept: application/json
+
+### Get document
+GET {{DocumentsService_HostAddress}}/api/documents/50000000-0000-0000-0000-000000000002
+Accept: application/json
+
+### Register document
+POST {{DocumentsService_HostAddress}}/api/documents
+Content-Type: application/json
+
+{
+  "claimNumber": "CLM-202606270001",
+  "documentType": "DiagnosticReport",
+  "fileName": "diagnostics-clm-202606270001.pdf",
+  "storageReference": "local://claims/CLM-202606270001/diagnostics.pdf",
+  "notes": "Uploaded after gateway extraction."
+}
+
+### Verify document
+POST {{DocumentsService_HostAddress}}/api/documents/50000000-0000-0000-0000-000000000002/verify
+Content-Type: application/json
+
+{
+  "notes": "Verified in the extracted Documents service."
+}
+
+### Reject document
+POST {{DocumentsService_HostAddress}}/api/documents/50000000-0000-0000-0000-000000000002/reject
+Content-Type: application/json
+
+{
+  "notes": "Document rejected in the extracted Documents service."
+}

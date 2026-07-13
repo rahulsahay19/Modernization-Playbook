@@ -65,7 +65,19 @@ Modular monolith connected
 If it still shows demo mode, stop and restart React with `npm run dev:modular`.
 Vite reads proxy settings only when the dev server starts.
 
-For the Strangler gateway stage, start the modular monolith first, then start:
+For the first extraction stage, start the modular monolith, the extracted
+Documents service, and the gateway:
+
+```powershell
+dotnet run --project modular-monolith/src/Api/HealthCare.Claims.ModularMonolith.Api
+dotnet run --project microservices/documents-service/src/HealthCare.Claims.DocumentsService.Api
+dotnet run --project gateway/src/HealthCare.Claims.Gateway
+```
+
+The modular monolith still owns most capabilities. The Documents service now
+owns `/api/documents`.
+
+For the gateway-only branch, the required gateway command is:
 
 ```powershell
 dotnet run --project gateway/src/HealthCare.Claims.Gateway
@@ -94,15 +106,18 @@ Use this quick screen test:
 2. Confirm the sidebar says **Strangler gateway connected**.
 3. Open **Overview**, **Claims**, **Members**, **Providers**, **Policies**,
    **Documents**, **Payments**, **Notifications**, and **Audit trail**.
-4. On **Claims**, select different rows and verify the detail panel updates.
-5. Open `http://localhost:5230/api/gateway/routes` to show the gateway route
+4. On **Documents**, verify rows load from the extracted service.
+5. On **Claims**, select different rows and verify the detail panel updates.
+6. Open `http://localhost:5230/api/gateway/routes` to show the gateway route
    table.
-6. Open `http://localhost:5230/api/gateway/health` to show upstream reachability.
+7. Confirm `/api/documents` points to `DocumentsService` on `http://localhost:5240`.
+8. Open `http://localhost:5230/api/gateway/health` to show upstream reachability.
 
 The request flow for this branch is:
 
 ```text
-React Portal -> Vite proxy -> Strangler Gateway -> Modular Monolith
+React Portal -> Vite proxy -> Strangler Gateway -> Documents Service
+React Portal -> Vite proxy -> Strangler Gateway -> Modular Monolith for everything else
 ```
 
 You can still override the proxy target manually:
