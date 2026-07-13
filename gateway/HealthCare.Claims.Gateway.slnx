@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HealthCare.Claims.Gateway/HealthCare.Claims.Gateway.csproj" />
+  </Folder>
+</Solution>
