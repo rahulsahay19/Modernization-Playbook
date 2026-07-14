@@ -122,6 +122,46 @@ Content-Type: application/json
 
 ###
 
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/integration-events/documents/registered
+Content-Type: application/json
+
+{
+  "id": "80000000-0000-0000-0000-000000000001",
+  "occurredOn": "2026-06-30T00:00:00Z",
+  "claimNumber": "CLM-202606270001",
+  "documentType": "DiagnosticReport",
+  "fileName": "mri-report-clm-202606270001.pdf"
+}
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/integration-events/documents/verified
+Content-Type: application/json
+
+{
+  "id": "80000000-0000-0000-0000-000000000002",
+  "occurredOn": "2026-06-30T00:05:00Z",
+  "claimNumber": "CLM-202606270001",
+  "documentType": "FinalBill",
+  "fileName": "final-bill-clm-202606270001.pdf"
+}
+
+###
+
+POST {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/integration-events/documents/rejected
+Content-Type: application/json
+
+{
+  "id": "80000000-0000-0000-0000-000000000003",
+  "occurredOn": "2026-06-30T00:10:00Z",
+  "claimNumber": "CLM-202606270001",
+  "documentType": "DiagnosticReport",
+  "fileName": "diagnostics-clm-202606270001.pdf",
+  "reason": "Uploaded document is not readable."
+}
+
+###
+
 GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/payments
 Accept: application/json
 
@@ -173,7 +213,6 @@ Accept: application/json
 
 ###
 
-  
 GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/reports/operations
 Accept: application/json
 
@@ -186,3 +225,5 @@ Accept: application/json
 
 GET {{HealthCare.Claims.ModularMonolith.Api_HostAddress}}/api/reports/payments-summary
 Accept: application/json
+
+###

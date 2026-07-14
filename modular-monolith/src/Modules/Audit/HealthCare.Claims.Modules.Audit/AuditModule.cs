@@ -23,7 +23,9 @@ namespace HealthCare.Claims.Modules.Audit
             services.AddScoped<IIntegrationEventHandler<ClaimSubmittedEvent>, AuditEventHandler>();
             services.AddScoped<IIntegrationEventHandler<ClaimApprovedEvent>, AuditEventHandler>();
             services.AddScoped<IIntegrationEventHandler<ClaimRejectedEvent>, AuditEventHandler>();
+            services.AddScoped<IIntegrationEventHandler<DocumentRegisteredEvent>, AuditEventHandler>();
             services.AddScoped<IIntegrationEventHandler<DocumentVerifiedEvent>, AuditEventHandler>();
+            services.AddScoped<IIntegrationEventHandler<DocumentRejectedEvent>, AuditEventHandler>();
             services.AddScoped<IIntegrationEventHandler<PaymentSettledEvent>, AuditEventHandler>();
         }
 

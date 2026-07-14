@@ -23,7 +23,9 @@ namespace HealthCare.Claims.Modules.Reporting
             services.AddScoped<IIntegrationEventHandler<ClaimSubmittedEvent>, ReportingEventHandler>();
             services.AddScoped<IIntegrationEventHandler<ClaimApprovedEvent>, ReportingEventHandler>();
             services.AddScoped<IIntegrationEventHandler<ClaimRejectedEvent>, ReportingEventHandler>();
+            services.AddScoped<IIntegrationEventHandler<DocumentRegisteredEvent>, ReportingEventHandler>();
             services.AddScoped<IIntegrationEventHandler<DocumentVerifiedEvent>, ReportingEventHandler>();
+            services.AddScoped<IIntegrationEventHandler<DocumentRejectedEvent>, ReportingEventHandler>();
             services.AddScoped<IIntegrationEventHandler<PaymentSettledEvent>, ReportingEventHandler>();
         }
 

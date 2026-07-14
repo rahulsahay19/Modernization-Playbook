@@ -3,8 +3,10 @@ using HealthCare.Claims.DocumentsService.Application.Abstractions;
 using HealthCare.Claims.DocumentsService.Application.Commands.Documents;
 using HealthCare.Claims.DocumentsService.Application.DTOs;
 using HealthCare.Claims.DocumentsService.Application.Handlers.Documents;
+using HealthCare.Claims.DocumentsService.Application.IntegrationEvents;
 using HealthCare.Claims.DocumentsService.Application.Queries.Documents;
 using HealthCare.Claims.DocumentsService.Domain.Enums;
+using HealthCare.Claims.DocumentsService.Infrastructure.IntegrationEvents;
 using HealthCare.Claims.DocumentsService.Infrastructure.Repositories;
 using Microsoft.OpenApi;
 using System.Text.Json.Nodes;
@@ -30,6 +32,8 @@ builder.Services.AddScoped<ICommandHandler<RegisterDocumentCommand, DocumentComm
 builder.Services.AddScoped<ICommandHandler<VerifyDocumentCommand, DocumentCommandResult>, VerifyDocumentCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<RejectDocumentCommand, DocumentCommandResult>, RejectDocumentCommandHandler>();
 builder.Services.AddSingleton<IClaimDocumentRepository, InMemoryClaimDocumentRepository>();
+builder.Services.Configure<IntegrationEventRelayOptions>(builder.Configuration.GetSection("IntegrationEventRelay"));
+builder.Services.AddHttpClient<IIntegrationEventPublisher, HttpIntegrationEventPublisher>();
 
 var app = builder.Build();
 

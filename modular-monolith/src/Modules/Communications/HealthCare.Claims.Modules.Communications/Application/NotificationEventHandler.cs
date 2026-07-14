@@ -11,7 +11,9 @@ namespace HealthCare.Claims.Modules.Communications.Application
         IIntegrationEventHandler<ClaimSubmittedEvent>,
         IIntegrationEventHandler<ClaimApprovedEvent>,
         IIntegrationEventHandler<ClaimRejectedEvent>,
+        IIntegrationEventHandler<DocumentRegisteredEvent>,
         IIntegrationEventHandler<DocumentVerifiedEvent>,
+        IIntegrationEventHandler<DocumentRejectedEvent>,
         IIntegrationEventHandler<PaymentSettledEvent>
     {
         public void Handle(ClaimSubmittedEvent integrationEvent) =>
@@ -38,6 +40,14 @@ namespace HealthCare.Claims.Modules.Communications.Application
                 $"Claim {integrationEvent.ClaimNumber} was rejected. Reason: {integrationEvent.Reason}",
                 nameof(ClaimRejectedEvent));
 
+        public void Handle(DocumentRegisteredEvent integrationEvent) =>
+        Add(
+            $"claim:{integrationEvent.ClaimNumber}",
+            NotificationChannel.Email,
+            "Document received",
+            $"{integrationEvent.DocumentType} document was received for claim {integrationEvent.ClaimNumber}.",
+            nameof(DocumentRegisteredEvent));
+
         public void Handle(DocumentVerifiedEvent integrationEvent) =>
             Add(
                 $"claim:{integrationEvent.ClaimNumber}",
@@ -45,6 +55,14 @@ namespace HealthCare.Claims.Modules.Communications.Application
                 "Document verified",
                 $"{integrationEvent.DocumentType} document has been verified for claim {integrationEvent.ClaimNumber}.",
                 nameof(DocumentVerifiedEvent));
+
+        public void Handle(DocumentRejectedEvent integrationEvent) =>
+        Add(
+            $"claim:{integrationEvent.ClaimNumber}",
+            NotificationChannel.Email,
+            "Document rejected",
+            $"{integrationEvent.DocumentType} document was rejected for claim {integrationEvent.ClaimNumber}. Reason: {integrationEvent.Reason}",
+            nameof(DocumentRejectedEvent));
 
         public void Handle(PaymentSettledEvent integrationEvent) =>
             Add(

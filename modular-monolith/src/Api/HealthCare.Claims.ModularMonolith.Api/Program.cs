@@ -1,3 +1,4 @@
+using HealthCare.Claims.ModularMonolith.Api.IntegrationEvents;
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
 using HealthCare.Claims.Modules.Audit;
@@ -83,7 +84,7 @@ foreach(var module in modules)
 {
     module.MapEndpoints(app);
 }
-
+app.MapDocumentIntegrationEventEndpoints();
 app.Run();
 
 static OpenApiSchema CreateStringEnumSchema<TEnum>()

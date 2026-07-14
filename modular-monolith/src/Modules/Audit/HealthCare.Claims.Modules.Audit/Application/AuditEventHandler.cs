@@ -8,7 +8,9 @@ namespace HealthCare.Claims.Modules.Audit.Application
         IIntegrationEventHandler<ClaimSubmittedEvent>,
         IIntegrationEventHandler<ClaimApprovedEvent>,
         IIntegrationEventHandler<ClaimRejectedEvent>,
+        IIntegrationEventHandler<DocumentRegisteredEvent>,
         IIntegrationEventHandler<DocumentVerifiedEvent>,
+        IIntegrationEventHandler<DocumentRejectedEvent>,
         IIntegrationEventHandler<PaymentSettledEvent>
     {
         void IIntegrationEventHandler<ClaimSubmittedEvent>.Handle(ClaimSubmittedEvent integrationEvent)
@@ -32,12 +34,26 @@ namespace HealthCare.Claims.Modules.Audit.Application
                 integrationEvent.ClaimNumber,
                 $"Claim rejected. Reason: {integrationEvent.Reason}");
 
+        public void Handle(DocumentRegisteredEvent integrationEvent) =>
+            Add(
+                "Documents",
+                nameof(DocumentRegisteredEvent),
+                integrationEvent.ClaimNumber,
+                $"{integrationEvent.DocumentType} document {integrationEvent.FileName} registered by extracted Documents Service.");
+
         public void Handle(DocumentVerifiedEvent integrationEvent) =>
             Add(
                 "Documents",
                 nameof(DocumentVerifiedEvent),
                 integrationEvent.ClaimNumber,
                 $"{integrationEvent.DocumentType} document {integrationEvent.FileName} verified.");
+
+        public void Handle(DocumentRejectedEvent integrationEvent) =>
+            Add(
+                "Documents",
+                nameof(DocumentRejectedEvent),
+                integrationEvent.ClaimNumber,
+                $"{integrationEvent.DocumentType} document {integrationEvent.FileName} rejected. Reason: {integrationEvent.Reason}");
 
         public void Handle(PaymentSettledEvent integrationEvent) =>
             Add(
@@ -46,14 +62,7 @@ namespace HealthCare.Claims.Modules.Audit.Application
                 integrationEvent.PaymentNumber,
                 $"Payment settled for claim {integrationEvent.ClaimNumber}, payee {integrationEvent.PayeeName}, amount Rs {integrationEvent.Amount}.");
 
-
-
-        void IIntegrationEventHandler<ClaimRejectedEvent>.Handle(ClaimRejectedEvent integrationEvent)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Add(string module, string eventName, string entityReference, string summary) =>
+                private void Add(string module, string eventName, string entityReference, string summary) =>
             auditEntries.Add(new AuditEntry(Guid.NewGuid(), module, eventName, entityReference, summary, DateTimeOffset.UtcNow));
     }
 }

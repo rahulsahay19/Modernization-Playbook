@@ -8,7 +8,9 @@ public sealed class ReportingEventHandler(IReportingProjectionRepository project
     IIntegrationEventHandler<ClaimSubmittedEvent>,
     IIntegrationEventHandler<ClaimApprovedEvent>,
     IIntegrationEventHandler<ClaimRejectedEvent>,
+    IIntegrationEventHandler<DocumentRegisteredEvent>,
     IIntegrationEventHandler<DocumentVerifiedEvent>,
+    IIntegrationEventHandler<DocumentRejectedEvent>,
     IIntegrationEventHandler<PaymentSettledEvent>
 {
     public void Handle(ClaimSubmittedEvent integrationEvent)
@@ -32,11 +34,25 @@ public sealed class ReportingEventHandler(IReportingProjectionRepository project
         AddRecent(nameof(ClaimRejectedEvent), integrationEvent.ClaimNumber, $"Rejected claim. Reason: {integrationEvent.Reason}", integrationEvent.OccurredOn);
     }
 
+    public void Handle(DocumentRegisteredEvent integrationEvent)
+    {
+        var projection = projections.GetProjection();
+        projection.RecordDocumentRegistered();
+        AddRecent(nameof(DocumentRegisteredEvent), integrationEvent.ClaimNumber, $"Registered {integrationEvent.DocumentType} document.", integrationEvent.OccurredOn);
+    }
+
     public void Handle(DocumentVerifiedEvent integrationEvent)
     {
         var projection = projections.GetProjection();
         projection.RecordDocumentVerified();
         AddRecent(nameof(DocumentVerifiedEvent), integrationEvent.ClaimNumber, $"Verified {integrationEvent.DocumentType} document.", integrationEvent.OccurredOn);
+    }
+
+    public void Handle(DocumentRejectedEvent integrationEvent)
+    {
+        var projection = projections.GetProjection();
+        projection.RecordDocumentRejected();
+        AddRecent(nameof(DocumentRejectedEvent), integrationEvent.ClaimNumber, $"Rejected {integrationEvent.DocumentType} document. Reason: {integrationEvent.Reason}", integrationEvent.OccurredOn);
     }
 
     public void Handle(PaymentSettledEvent integrationEvent)

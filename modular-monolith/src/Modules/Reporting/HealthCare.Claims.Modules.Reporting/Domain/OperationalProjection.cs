@@ -5,7 +5,11 @@
         public int ClaimsSubmitted { get; private set; }
         public int ClaimsApproved { get; private set; }
         public int ClaimsRejected { get; private set; }
+        public int DocumentsRegistered { get; private set; }
+
         public int DocumentsVerified { get; private set; }
+
+        public int DocumentsRejected { get; private set; }
         public int PaymentsSettled { get; private set; }
 
         public decimal SubmittedClaimAmount { get; private set; }
@@ -32,10 +36,19 @@
             ClaimsRejected++;
             Touch();
         }
-
+        public void RecordDocumentRegistered()
+        {
+            DocumentsRegistered++;
+            Touch();
+        }
         public void RecordDocumentVerified()
         {
             DocumentsVerified++;
+            Touch();
+        }
+        public void RecordDocumentRejected()
+        {
+            DocumentsRejected++;
             Touch();
         }
 

@@ -23,7 +23,9 @@ namespace HealthCare.Claims.Modules.Communications
             services.AddScoped<IIntegrationEventHandler<ClaimSubmittedEvent>, NotificationEventHandler>();
             services.AddScoped<IIntegrationEventHandler<ClaimApprovedEvent>, NotificationEventHandler>();
             services.AddScoped<IIntegrationEventHandler<ClaimRejectedEvent>, NotificationEventHandler>();
+            services.AddScoped<IIntegrationEventHandler<DocumentRegisteredEvent>, NotificationEventHandler>();
             services.AddScoped<IIntegrationEventHandler<DocumentVerifiedEvent>, NotificationEventHandler>();
+            services.AddScoped<IIntegrationEventHandler<DocumentRejectedEvent>, NotificationEventHandler>();
             services.AddScoped<IIntegrationEventHandler<PaymentSettledEvent>, NotificationEventHandler>();
         }
 
