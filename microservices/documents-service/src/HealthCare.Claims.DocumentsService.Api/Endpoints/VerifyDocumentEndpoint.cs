@@ -8,12 +8,13 @@ public static class VerifyDocumentEndpoint
 {
     public static RouteGroupBuilder MapVerifyDocumentEndpoint(this RouteGroupBuilder group)
     {
-        group.MapPost("/{id:guid}/verify", (
+        group.MapPost("/{id:guid}/verify", async (
             Guid id,
             DocumentDecisionRequest request,
-            ICommandHandler<VerifyDocumentCommand, DocumentCommandResult> handler) =>
+            ICommandHandler<VerifyDocumentCommand, DocumentCommandResult> handler,
+            CancellationToken cancellationToken) =>
         {
-            var result = handler.Handle(new VerifyDocumentCommand(id, request.Notes));
+            var result = await handler.Handle(new VerifyDocumentCommand(id, request.Notes), cancellationToken);
 
             return result.NotFound
                 ? Results.NotFound()

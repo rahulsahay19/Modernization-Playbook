@@ -8,11 +8,12 @@ public static class RegisterDocumentEndpoint
 {
     public static RouteGroupBuilder MapRegisterDocumentEndpoint(this RouteGroupBuilder group)
     {
-        group.MapPost("/", (
+        group.MapPost("/", async (
             RegisterDocumentCommand command,
-            ICommandHandler<RegisterDocumentCommand, DocumentCommandResult> handler) =>
+            ICommandHandler<RegisterDocumentCommand, DocumentCommandResult> handler,
+            CancellationToken cancellationToken) =>
         {
-            var result = handler.Handle(command);
+            var result = await handler.Handle(command, cancellationToken);
 
             return result.Error is not null
                 ? Results.BadRequest(new { error = result.Error })

@@ -1,15 +1,19 @@
 using HealthCare.Claims.DocumentsService.Application.Abstractions;
 using HealthCare.Claims.DocumentsService.Application.Commands.Documents;
 using HealthCare.Claims.DocumentsService.Application.DTOs;
+using HealthCare.Claims.DocumentsService.Application.IntegrationEvents;
+using HealthCare.Claims.DocumentsService.Application.IntegrationEvents.Contracts;
 using HealthCare.Claims.DocumentsService.Domain.Entities;
 using HealthCare.Claims.DocumentsService.Domain.Enums;
 
 namespace HealthCare.Claims.DocumentsService.Application.Handlers.Documents;
 
-public sealed class RegisterDocumentCommandHandler(IClaimDocumentRepository repository)
+public sealed class RegisterDocumentCommandHandler(
+    IClaimDocumentRepository repository,
+    IIntegrationEventPublisher eventPublisher)
     : ICommandHandler<RegisterDocumentCommand, DocumentCommandResult>
 {
-    public DocumentCommandResult Handle(RegisterDocumentCommand command)
+    public async Task<DocumentCommandResult> Handle(RegisterDocumentCommand command, CancellationToken cancellationToken)
     {
         var validationError = Validate(command);
         if (validationError is not null)
@@ -27,6 +31,13 @@ public sealed class RegisterDocumentCommandHandler(IClaimDocumentRepository repo
             command.Notes);
 
         repository.Add(document);
+        await eventPublisher.PublishDocumentRegisteredAsync(
+            new DocumentRegisteredIntegrationEvent(
+                Guid.NewGuid(),
+                DateTimeOffset.UtcNow,
+                document.ClaimNumber,
+                document.DocumentType.ToString(),
+                document.FileName), cancellationToken);
 
         return DocumentCommandResult.Success(DocumentResponse.FromDocument(document));
     }

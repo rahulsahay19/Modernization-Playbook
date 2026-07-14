@@ -8,12 +8,13 @@ public static class RejectDocumentEndpoint
 {
     public static RouteGroupBuilder MapRejectDocumentEndpoint(this RouteGroupBuilder group)
     {
-        group.MapPost("/{id:guid}/reject", (
+        group.MapPost("/{id:guid}/reject", async (
             Guid id,
             DocumentDecisionRequest request,
-            ICommandHandler<RejectDocumentCommand, DocumentCommandResult> handler) =>
+            ICommandHandler<RejectDocumentCommand, DocumentCommandResult> handler,
+            CancellationToken cancellationToken) =>
         {
-            var result = handler.Handle(new RejectDocumentCommand(id, request.Notes));
+            var result = await handler.Handle(new RejectDocumentCommand(id, request.Notes), cancellationToken);
 
             if (result.NotFound)
             {
