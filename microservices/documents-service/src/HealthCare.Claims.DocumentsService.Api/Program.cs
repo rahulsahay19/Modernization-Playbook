@@ -4,6 +4,7 @@ using HealthCare.Claims.DocumentsService.Application.Commands.Documents;
 using HealthCare.Claims.DocumentsService.Application.DTOs;
 using HealthCare.Claims.DocumentsService.Application.Handlers.Documents;
 using HealthCare.Claims.DocumentsService.Application.IntegrationEvents;
+using HealthCare.Claims.DocumentsService.Application.IntegrationEvents.Outbox;
 using HealthCare.Claims.DocumentsService.Application.Queries.Documents;
 using HealthCare.Claims.DocumentsService.Domain.Enums;
 using HealthCare.Claims.DocumentsService.Infrastructure.IntegrationEvents;
@@ -32,8 +33,11 @@ builder.Services.AddScoped<ICommandHandler<RegisterDocumentCommand, DocumentComm
 builder.Services.AddScoped<ICommandHandler<VerifyDocumentCommand, DocumentCommandResult>, VerifyDocumentCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<RejectDocumentCommand, DocumentCommandResult>, RejectDocumentCommandHandler>();
 builder.Services.AddSingleton<IClaimDocumentRepository, InMemoryClaimDocumentRepository>();
-builder.Services.Configure<IntegrationEventRelayOptions>(builder.Configuration.GetSection("IntegrationEventRelay"));
-builder.Services.AddHttpClient<IIntegrationEventPublisher, HttpIntegrationEventPublisher>();
+builder.Services.Configure<IntegrationEventBrokerOptions>(builder.Configuration.GetSection("IntegrationEventBroker"));
+builder.Services.AddSingleton<IOutboxStore, InMemoryOutBoxStore>();
+builder.Services.AddSingleton<IIntegrationEventBroker, LocalFileIntegrationEventBroker>();
+builder.Services.AddSingleton<IIntegrationEventPublisher, OutboxIntegrationEventPublisher>();
+builder.Services.AddHostedService<OutboxPublisherBackgroundService>();
 
 var app = builder.Build();
 
@@ -52,6 +56,7 @@ app.Use(async (context, next) =>
 app.MapGet("/", () => Results.Redirect("/api/documents"));
 app.MapServiceInfoEndpoints();
 app.MapDocumentEndpoints();
+app.MapOutboxEndpoints();
 
 app.Run();
 

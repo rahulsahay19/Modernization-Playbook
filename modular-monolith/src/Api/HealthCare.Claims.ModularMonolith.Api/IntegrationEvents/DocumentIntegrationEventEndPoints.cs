@@ -1,5 +1,6 @@
 ﻿using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events.BusinessEvents;
+using Microsoft.Extensions.Options;
 
 namespace HealthCare.Claims.ModularMonolith.Api.IntegrationEvents
 {
@@ -9,6 +10,20 @@ namespace HealthCare.Claims.ModularMonolith.Api.IntegrationEvents
         {
             var group = endpoints.MapGroup("/api/integration-events/documents")
                 .WithTags("Cross-service document events");
+
+            group.MapGet("/broker", (IOptions<IntegrationEventBrokerOptions> options) =>{
+                var queueDirectory = BrokerPathResolver.ResolveQueueDirectory(options.Value.QueueDirectory);
+                Directory.CreateDirectory(queueDirectory);
+
+                return Results.Ok(new
+                {
+                    broker = "Local file integration-event broker",
+                    queueDirectory,
+                    queued = Directory.EnumerateFiles(queueDirectory, "*.json").Count(),
+                    processed = CountBrokerFiles(queueDirectory, "processed"),
+                    failed = CountBrokerFiles(queueDirectory, "failed")
+                });
+            });
 
             group.MapPost("/registered", (DocumentRegisteredIntegrationEvent integrationEvent, IEventBus eventBus) =>
             {
@@ -48,6 +63,14 @@ namespace HealthCare.Claims.ModularMonolith.Api.IntegrationEvents
             });
 
             return endpoints;
+        }
+
+        private static int CountBrokerFiles(string queueDirectory, string folderName)
+        {
+            var directory = Path.Combine(queueDirectory, folderName);
+            return Directory.Exists(directory)
+                ? Directory.EnumerateFiles(directory, "*.json").Count()
+                : 0;
         }
     }
 }
