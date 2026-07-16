@@ -59,4 +59,9 @@ public sealed class InMemoryClaimDocumentRepository : IClaimDocumentRepository
             documents.Add(document);
         }
     }
+
+    public void Update(ClaimDocument document)
+    {
+        throw new NotImplementedException();
+    }
 }

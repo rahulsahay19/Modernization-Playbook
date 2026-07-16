@@ -9,4 +9,6 @@ public interface IClaimDocumentRepository
     ClaimDocument? GetById(Guid id);
 
     void Add(ClaimDocument document);
+
+    void Update(ClaimDocument document);
 }

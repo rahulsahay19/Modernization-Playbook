@@ -9,7 +9,8 @@ public sealed class ClaimDocument(
     string fileName,
     string storageReference,
     ClaimDocumentStatus status,
-    string? notes = null)
+    string? notes = null,
+    DateTimeOffset? receivedOn = null)   
 {
     public Guid Id { get; } = id;
 
@@ -25,7 +26,7 @@ public sealed class ClaimDocument(
 
     public string? Notes { get; private set; } = notes;
 
-    public DateTimeOffset ReceivedOn { get; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset ReceivedOn { get; } = receivedOn ?? DateTimeOffset.UtcNow;
 
     public void Verify(string? notes)
     {

@@ -1,4 +1,5 @@
 using HealthCare.Claims.DocumentsService.Api.Endpoints;
+using HealthCare.Claims.DocumentsService.Api.Endpoints.Persistence;
 using HealthCare.Claims.DocumentsService.Application.Abstractions;
 using HealthCare.Claims.DocumentsService.Application.Commands.Documents;
 using HealthCare.Claims.DocumentsService.Application.DTOs;
@@ -8,7 +9,9 @@ using HealthCare.Claims.DocumentsService.Application.IntegrationEvents.Outbox;
 using HealthCare.Claims.DocumentsService.Application.Queries.Documents;
 using HealthCare.Claims.DocumentsService.Domain.Enums;
 using HealthCare.Claims.DocumentsService.Infrastructure.IntegrationEvents;
+using HealthCare.Claims.DocumentsService.Infrastructure.Persistence;
 using HealthCare.Claims.DocumentsService.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -32,14 +35,20 @@ builder.Services.AddScoped<IQueryHandler<GetDocumentQuery, DocumentResponse?>, G
 builder.Services.AddScoped<ICommandHandler<RegisterDocumentCommand, DocumentCommandResult>, RegisterDocumentCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<VerifyDocumentCommand, DocumentCommandResult>, VerifyDocumentCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<RejectDocumentCommand, DocumentCommandResult>, RejectDocumentCommandHandler>();
-builder.Services.AddSingleton<IClaimDocumentRepository, InMemoryClaimDocumentRepository>();
+var documentsConnectionString = DatabasePathResolver.ResolveSqliteConnectionString(
+    builder.Configuration.GetConnectionString("DocumentsDatabase"));
+builder.Services.AddDbContext<DocumentsDbContext>(options =>
+    options.UseSqlite(documentsConnectionString));
+
+builder.Services.AddScoped<IClaimDocumentRepository, EfClaimDocumentRepository>();
 builder.Services.Configure<IntegrationEventBrokerOptions>(builder.Configuration.GetSection("IntegrationEventBroker"));
-builder.Services.AddSingleton<IOutboxStore, InMemoryOutBoxStore>();
+builder.Services.AddScoped<IOutboxStore, EfOutboxStore>();
 builder.Services.AddSingleton<IIntegrationEventBroker, LocalFileIntegrationEventBroker>();
-builder.Services.AddSingleton<IIntegrationEventPublisher, OutboxIntegrationEventPublisher>();
+builder.Services.AddScoped<IIntegrationEventPublisher, OutboxIntegrationEventPublisher>();
 builder.Services.AddHostedService<OutboxPublisherBackgroundService>();
 
 var app = builder.Build();
+await DocumentsDatabaseInitializer.InitializeAsync(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
@@ -57,7 +66,7 @@ app.MapGet("/", () => Results.Redirect("/api/documents"));
 app.MapServiceInfoEndpoints();
 app.MapDocumentEndpoints();
 app.MapOutboxEndpoints();
-
+app.MapStorageEndPoints();
 app.Run();
 
 static OpenApiSchema CreateStringEnumSchema<TEnum>()
