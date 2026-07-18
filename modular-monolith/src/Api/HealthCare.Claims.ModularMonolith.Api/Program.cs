@@ -31,7 +31,21 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 builder.Services.AddSingleton<IEventBus, InProcessEventBus>();
 builder.Services.Configure<IntegrationEventBrokerOptions>(builder.Configuration.GetSection("IntegrationEventBroker"));
-builder.Services.AddHostedService<BrokeredDocumentIntegrationEventConsumer>();
+builder.Services.AddSingleton<DocumentIntegrationEventDispatcher>();
+builder.Services.AddSingleton<IHostedService>(services =>
+{
+    var options = services.GetRequiredService<Microsoft.Extensions.Options.IOptions<IntegrationEventBrokerOptions>>().Value;
+
+    return string.Equals(options.Transport, "LocalFile", StringComparison.OrdinalIgnoreCase)
+        ? new BrokeredDocumentIntegrationEventConsumer(
+            services.GetRequiredService<DocumentIntegrationEventDispatcher>(),
+            services.GetRequiredService<Microsoft.Extensions.Options.IOptions<IntegrationEventBrokerOptions>>(),
+            services.GetRequiredService<ILogger<BrokeredDocumentIntegrationEventConsumer>>())
+        : new RabbitMqDocumentIntegrationEventConsumer(
+            services.GetRequiredService<DocumentIntegrationEventDispatcher>(),
+            services.GetRequiredService<Microsoft.Extensions.Options.IOptions<IntegrationEventBrokerOptions>>(),
+            services.GetRequiredService<ILogger<RabbitMqDocumentIntegrationEventConsumer>>());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

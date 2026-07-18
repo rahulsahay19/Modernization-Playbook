@@ -1,12 +1,10 @@
 ﻿using System.Text.Json;
-using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
-using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events.BusinessEvents;
 using Microsoft.Extensions.Options;
 
 namespace HealthCare.Claims.ModularMonolith.Api.IntegrationEvents;
 
 public sealed class BrokeredDocumentIntegrationEventConsumer(
-    IEventBus eventBus,
+    DocumentIntegrationEventDispatcher dispatcher,
     IOptions<IntegrationEventBrokerOptions> options,
     ILogger<BrokeredDocumentIntegrationEventConsumer> logger) : BackgroundService
 {
@@ -45,7 +43,7 @@ public sealed class BrokeredDocumentIntegrationEventConsumer(
                     continue;
                 }
 
-                Dispatch(brokeredEvent);
+                dispatcher.Dispatch(brokeredEvent);
                 MoveMessage(messagePath, "processed");
                 logger.LogInformation(
                     "Consumed brokered document event {EventType} with message id {MessageId}",
@@ -58,60 +56,6 @@ public sealed class BrokeredDocumentIntegrationEventConsumer(
                 MoveMessage(messagePath, "failed");
             }
         }
-    }
-
-    private void Dispatch(BrokeredIntegrationEvent brokeredEvent)
-    {
-        switch (brokeredEvent.EventType)
-        {
-            case nameof(DocumentRegisteredIntegrationEvent):
-                {
-                    var integrationEvent = DeserializePayload<DocumentRegisteredIntegrationEvent>(brokeredEvent);
-                    eventBus.Publish(new DocumentRegisteredEvent(
-                        integrationEvent.Id,
-                        integrationEvent.OccurredOn,
-                        integrationEvent.ClaimNumber,
-                        integrationEvent.DocumentType,
-                        integrationEvent.FileName));
-                    break;
-                }
-
-            case nameof(DocumentVerifiedIntegrationEvent):
-                {
-                    var integrationEvent = DeserializePayload<DocumentVerifiedIntegrationEvent>(brokeredEvent);
-                    eventBus.Publish(new DocumentVerifiedEvent(
-                        integrationEvent.Id,
-                        integrationEvent.OccurredOn,
-                        integrationEvent.ClaimNumber,
-                        integrationEvent.DocumentType,
-                        integrationEvent.FileName));
-                    break;
-                }
-
-            case nameof(DocumentRejectedIntegrationEvent):
-                {
-                    var integrationEvent = DeserializePayload<DocumentRejectedIntegrationEvent>(brokeredEvent);
-                    eventBus.Publish(new DocumentRejectedEvent(
-                        integrationEvent.Id,
-                        integrationEvent.OccurredOn,
-                        integrationEvent.ClaimNumber,
-                        integrationEvent.DocumentType,
-                        integrationEvent.FileName,
-                        integrationEvent.Reason));
-                    break;
-                }
-
-            default:
-                throw new InvalidOperationException($"Unsupported brokered document event type '{brokeredEvent.EventType}'.");
-        }
-    }
-
-    private static TEvent DeserializePayload<TEvent>(BrokeredIntegrationEvent brokeredEvent)
-    {
-        var integrationEvent = JsonSerializer.Deserialize<TEvent>(brokeredEvent.Payload, JsonOptions);
-
-        return integrationEvent
-            ?? throw new InvalidOperationException($"Could not deserialize payload for '{brokeredEvent.EventType}'.");
     }
 
     private static void MoveMessage(string messagePath, string folderName)
