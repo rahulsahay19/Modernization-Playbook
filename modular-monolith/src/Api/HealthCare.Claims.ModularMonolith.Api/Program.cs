@@ -1,4 +1,5 @@
 using HealthCare.Claims.ModularMonolith.Api.IntegrationEvents;
+using HealthCare.Claims.ModularMonolith.Api.Observability;
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Events;
 using HealthCare.Claims.ModularMonolith.BuildingBlocks.Modules;
 using HealthCare.Claims.Modules.Audit;
@@ -24,6 +25,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddClaimSphereObservability("claimsphere.modular-monolith");
 builder.Services.AddControllers();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -80,6 +82,7 @@ foreach (var module in modules)
 }
 
 var app = builder.Build();
+app.UseClaimSphereCorrelationId();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

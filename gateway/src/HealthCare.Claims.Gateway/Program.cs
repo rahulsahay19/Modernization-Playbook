@@ -1,8 +1,10 @@
 using HealthCare.Claims.Gateway.Configuration;
 using HealthCare.Claims.Gateway.Endpoints;
+using HealthCare.Claims.Gateway.Observability;
 using HealthCare.Claims.Gateway.Proxy;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddClaimSphereObservability("claimsphere.gateway");
 builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
 builder.Services.AddHttpClient("strangler-gateway");
 builder.Services.AddSingleton<StranglerRouteSelector>();
@@ -17,6 +19,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+app.UseClaimSphereCorrelationId();
 app.UseCors("FrontendCors");
 app.MapGatewayEndpoints();
 app.Run();

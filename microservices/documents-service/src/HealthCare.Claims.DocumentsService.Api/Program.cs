@@ -10,7 +10,7 @@ using HealthCare.Claims.DocumentsService.Application.Queries.Documents;
 using HealthCare.Claims.DocumentsService.Domain.Enums;
 using HealthCare.Claims.DocumentsService.Infrastructure.IntegrationEvents;
 using HealthCare.Claims.DocumentsService.Infrastructure.Persistence;
-using HealthCare.Claims.DocumentsService.Infrastructure.Repositories;
+using HealthCare.Claims.DocumentsService.Observability;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
@@ -19,6 +19,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddClaimSphereObservability("claimsphere.documents-service");
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -63,7 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseClaimSphereCorrelationId();
 app.Use(async (context, next) =>
 {
     context.Response.Headers["X-Service-Name"] = "DocumentsService";
