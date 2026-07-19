@@ -74,7 +74,8 @@ public sealed class GatewayProxy(
         foreach (var header in request.Headers)
         {
             if (header.Key.Equals("Host", StringComparison.OrdinalIgnoreCase) ||
-                header.Key.Equals("Content-Length", StringComparison.OrdinalIgnoreCase))
+                header.Key.Equals("Content-Length", StringComparison.OrdinalIgnoreCase) ||
+                header.Key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }

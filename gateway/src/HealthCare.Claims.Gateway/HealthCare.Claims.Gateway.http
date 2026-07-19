@@ -1,0 +1,28 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@GatewayHost = http://localhost:5230
+
+GET {{GatewayHost}}/api/gateway/routes
+Accept: application/json
+
+###
+
+GET {{GatewayHost}}/api/gateway/health
+Accept: application/json
+
+###
+
+POST {{GatewayHost}}/api/documents
+Content-Type: application/json
+
+{
+  "claimNumber": "CLM-202606270001",
+  "documentType": "DiagnosticReport",
+  "fileName": "gateway-upload-diagnostics.pdf",
+  "storageReference": "local://claims/CLM-202606270001/gateway-upload-diagnostics.pdf",
+  "notes": "Uploaded through strangler gateway."
+}
+
+###
+
+GET {{GatewayHost}}/api/documents?claimNumber=CLM-202606270001
+Accept: application/json

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using HealthCare.Claims.DocumentsService.Application.IntegrationEvents.Outbox;
 using Microsoft.Extensions.Options;
@@ -9,7 +10,7 @@ namespace HealthCare.Claims.DocumentsService.Infrastructure.IntegrationEvents;
 public sealed class RabbitMqIntegrationEventBroker(IOptions<IntegrationEventBrokerOptions> options) : IIntegrationEventBroker
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
-
+    private static readonly ActivitySource ActivitySource = new("claimsphere.documents-service"); 
     public async Task PublishAsync(OutboxMessage message, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -21,6 +22,13 @@ public sealed class RabbitMqIntegrationEventBroker(IOptions<IntegrationEventBrok
             message.Payload);
 
         var brokerOptions = options.Value;
+        using var activity = ActivitySource.StartActivity("rabbitmq.publish documents.events", ActivityKind.Producer);
+        activity?.SetTag("messaging.system", "rabbitmq");
+        activity?.SetTag("messaging.destination.name", brokerOptions.ExchangeName);
+        activity?.SetTag("messaging.rabbitmq.routing_key", brokerOptions.RoutingKey);
+        activity?.SetTag("messaging.message.id", message.Id.ToString());
+        activity?.SetTag("event.type", message.EventType);
+
         var factory = CreateConnectionFactory(brokerOptions);
 
         await using var connection = await factory.CreateConnectionAsync(cancellationToken);
@@ -46,6 +54,17 @@ public sealed class RabbitMqIntegrationEventBroker(IOptions<IntegrationEventBrok
             brokerOptions.RoutingKey,
             cancellationToken: cancellationToken);
 
+        var headers = new Dictionary<string, object?>();
+        if(Activity.Current?.Id is { } traceParent) // traceparent -> version-traceId-spanId-flags -> 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+        {
+            headers["traceparent"] = traceParent;
+        }
+
+        if(Activity.Current?.TraceStateString is { Length: > 0} traceState)
+        {
+            headers["tracestate"] = traceState;
+        }
+
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(brokeredEvent, JsonOptions));
         var properties = new BasicProperties
         {
@@ -63,6 +82,7 @@ public sealed class RabbitMqIntegrationEventBroker(IOptions<IntegrationEventBrok
             basicProperties: properties,
             body: body,
             cancellationToken: cancellationToken);
+        activity?.SetStatus(ActivityStatusCode.Ok);
     }
 
     private static ConnectionFactory CreateConnectionFactory(IntegrationEventBrokerOptions options) =>

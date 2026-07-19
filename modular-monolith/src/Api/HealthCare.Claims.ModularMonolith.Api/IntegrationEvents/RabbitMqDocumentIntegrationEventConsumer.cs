@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -11,6 +12,7 @@ public sealed class RabbitMqDocumentIntegrationEventConsumer(
     IOptions<IntegrationEventBrokerOptions> options,
     ILogger<RabbitMqDocumentIntegrationEventConsumer> logger) : BackgroundService
 {
+    private static readonly ActivitySource ActivitySource = new("claimsphere.modular-monolith");
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
         PropertyNameCaseInsensitive = true
@@ -68,14 +70,27 @@ public sealed class RabbitMqDocumentIntegrationEventConsumer(
         var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.ReceivedAsync += async (_, eventArgs) =>
         {
+            var parentContext = TryGetParentContext(eventArgs.BasicProperties.Headers);
+            using var activity = ActivitySource.StartActivity(
+                "rabbitmq.consume modular-monolith.documents",
+                ActivityKind.Consumer,
+                parentContext);
+
+            activity?.SetTag("messaging.system", "rabbitmq");
+            activity?.SetTag("messaging.destination.name", brokerOptions.QueueName);
+            activity?.SetTag("messaging.rabbitmq.routing_key", brokerOptions.RoutingKey);
+            activity?.SetTag("messaging.message.id", eventArgs.BasicProperties.MessageId);
+
             try
             {
                 var json = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
                 var brokeredEvent = JsonSerializer.Deserialize<BrokeredIntegrationEvent>(json, JsonOptions)
                     ?? throw new InvalidOperationException("RabbitMQ message did not contain a brokered integration event.");
 
+                activity?.SetTag("event.type", brokeredEvent.EventType);
                 dispatcher.Dispatch(brokeredEvent);
                 await channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false, cancellationToken);
+                activity?.SetStatus(ActivityStatusCode.Ok);
 
                 logger.LogInformation(
                     "Consumed RabbitMQ document event {EventType} with message id {MessageId}",
@@ -84,6 +99,7 @@ public sealed class RabbitMqDocumentIntegrationEventConsumer(
             }
             catch (Exception exception)
             {
+                activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
                 logger.LogWarning(exception, "Could not consume RabbitMQ document event; moving message out of the queue.");
                 await channel.BasicNackAsync(eventArgs.DeliveryTag, multiple: false, requeue: false, cancellationToken);
             }
@@ -111,4 +127,30 @@ public sealed class RabbitMqDocumentIntegrationEventConsumer(
             UserName = options.UserName,
             Password = options.Password
         };
+
+    private static ActivityContext TryGetParentContext(IDictionary<string, object?>? headers)
+    {
+        var traceParent = GetHeader(headers, "traceparent");
+        var traceState = GetHeader(headers, "tracestate");
+
+        return ActivityContext.TryParse(traceParent, traceState, out var context)
+            ? context
+            : default;
+    }
+
+    private static string? GetHeader(IDictionary<string, object?>? headers, string key)
+    {
+        if (headers is null || !headers.TryGetValue(key, out var value))
+        {
+            return null;
+        }
+
+        return value switch
+        {
+            null => null,
+            byte[] bytes => Encoding.UTF8.GetString(bytes),
+            string text => text,
+            _ => value.ToString()
+        };
+    }
 }
